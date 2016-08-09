@@ -2,13 +2,11 @@ use warnings;
 use strict;
 use Data::Dumper;
 
-my $n=0;
 my $root={};
 my $time = time;
 open (D, "<", 'dict');
 while (my $text = <D>){
 	chomp $text;
-	$n++;
 	my $hashRef = \$root;    
 	my @tmp = split(' ', $text);
 	foreach my $tmp (@tmp){
@@ -18,7 +16,6 @@ while (my $text = <D>){
 			$$hashRef=1;
 		}
 	}
-	last if $n>5;
 }
 
 # warn Dumper($root);
@@ -26,12 +23,10 @@ while (my $text = <D>){
 warn time - $time;
 
 open (S, "<", 'text');
-$n =0;
 $time = time;
 while (my $line = <S>){
-my $found =0;
+	my $found =0;
 	chomp $line;
-	$n++;
 	my $hashRef = \$root;
 	my $switch=0;
 	my @tmp = split(' ', $line);
@@ -54,7 +49,6 @@ my $found =0;
 		else {
 			$hashRef=\$root;
 			if(not defined $$hashRef->{$tmp}){$print.=$match.$tmp." ";}
-			# if (defined $$hashRef->{$tmp})
 			else {
 				$print.=$match;
 				$match="";
@@ -64,6 +58,5 @@ my $found =0;
 	}
 	$print=~s/ $//;
 	print $print, "\n" if $found ==1;
-	# last if $n>500;
 }
 warn time - $time;
