@@ -1,4 +1,4 @@
-dict_file = open("C:/Users/muhammad.khattab/Workspace/Python/Hash/dict", 'r')
+dict_file = open("dict", 'r')
 dict = {}
 
 for dict_entry in dict_file:
@@ -19,7 +19,7 @@ def found_match(fm_print_line, fm_match, fm_found, fm_ref):
 	fm_match =""
 	return fm_print_line, fm_match, fm_found, fm_ref
 
-text_file = open("C:/Users/muhammad.khattab/Workspace/Python/Hash/text", 'r')
+text_file = open("text", 'r')
 for line in text_file:
 	found =0
 	ref = dict
