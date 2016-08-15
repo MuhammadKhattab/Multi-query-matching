@@ -1,6 +1,5 @@
 use warnings;
 use strict;
-use Data::Dumper;
 
 my $root={};
 my $time = time;
@@ -16,11 +15,19 @@ while (my $text = <D>){
 			$$hashRef=1;
 		}
 	}
+	last if $n>5;
 }
 
-# warn Dumper($root);
-
 warn time - $time;
+
+sub found_match {
+	my ($fm_print_line, $fm_match, $fm_found, $fm_ref)= @_;
+	$fm_print_line .= "<FOUND>".$fm_match."<\/FOUND> ";
+	$fm_found =1;
+	$fm_ref = \$root;
+	$fm_match ="";	
+	return ($fm_print_line, $fm_match, $fm_found, $fm_ref);
+}
 
 open (S, "<", 'text');
 $time = time;
@@ -35,25 +42,28 @@ while (my $line = <S>){
 	for (my $i=0; $i<=$#tmp; $i++){
 		my $tmp = $tmp[$i];
 		if (defined $$hashRef->{$tmp}){
-			check:
 			$hashRef=\$$hashRef->{$tmp};
 			$match.=$tmp." ";
 			if (defined $$hashRef->{''}){
 				$match=~s/ $//;
-				$print.="<FOUND>$match<\/FOUND> ";
-				$found =1;
-				$hashRef=\$root;
-				$match="";
+				($print, $match, $found, $hashRef) = found_match($print, $match, $found, $hashRef);
 			}
 		}
 		else {
 			$hashRef=\$root;
-			if(not defined $$hashRef->{$tmp}){$print.=$match.$tmp." ";}
+			if (not defined $$hashRef->{$tmp}){
+				$print.=$match.$tmp." ";
+			}
 			else {
 				$print.=$match;
 				$match="";
-				goto check;
+				$hashRef = \$$hashRef->{$tmp};
+				$match.=$tmp." ";
+				if (defined $$hashRef->{''}){
+					$match =~s/ $//;
+					($print, $match, $found, $hashRef) = found_match($print, $match, $found, $hashRef);
 				}
+			}
 		}
 	}
 	$print=~s/ $//;
